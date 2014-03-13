@@ -160,6 +160,13 @@ CGFloat const kAnimationSpeed = .25;
     }];
 }
 
+- (void)addSelectedContact:(MBContactModel *)contact {
+
+    [self.contactCollectionView addToSelectedContacts:contact withCompletion:^{
+    }];
+
+}
+
 #pragma mark - Properties
 
 - (NSArray*)contactsSelected

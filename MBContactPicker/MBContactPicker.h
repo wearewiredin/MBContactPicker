@@ -56,5 +56,6 @@
 @property (nonatomic, copy) UIColor *selectedColor;
 
 - (void)reloadData;
+- (void)addSelectedContact:(MBContactModel *)contact;
 
 @end
