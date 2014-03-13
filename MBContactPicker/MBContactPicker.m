@@ -184,6 +184,37 @@ CGFloat const kAnimationSpeed = .25;
     self.contactCollectionView.prompt = _prompt;
 }
 
+- (void)setPromptImage:(UIImage *)promptImage {
+    _promptImage = [promptImage copy];
+    self.contactCollectionView.promptImage = promptImage;
+}
+
+- (void)setPromptPlaceholder:(NSString *)promptPlaceholder {
+    _promptPlaceholder = [promptPlaceholder copy];
+    self.contactCollectionView.promptPlaceholder = promptPlaceholder;
+}
+
+- (void)setFont:(UIFont *)font {
+    _font = font.copy;
+    self.contactCollectionView.font = font;
+}
+
+- (void)setPlaceholderColor:(UIColor *)placeholderColor {
+    _placeholderColor = placeholderColor.copy;
+    self.contactCollectionView.placeholderColor = placeholderColor;
+}
+
+- (void)setTextColor:(UIColor *)textColor {
+    _textColor = textColor.copy;
+    self.contactCollectionView.textColor = textColor;
+}
+
+- (void)setSelectedColor:(UIColor *)selectedColor {
+    _selectedColor = selectedColor;
+    self.contactCollectionView.selectedColor = selectedColor;
+}
+
+
 - (void)setMaxVisibleRows:(CGFloat)maxVisibleRows
 {
     _maxVisibleRows = maxVisibleRows;
@@ -196,6 +227,7 @@ CGFloat const kAnimationSpeed = .25;
     CGFloat maximumSize = self.maxVisibleRows * self.cellHeight;
     return MIN(minimumSizeWithContent, maximumSize);
 }
+
 
 - (void)setEnabled:(BOOL)enabled
 {

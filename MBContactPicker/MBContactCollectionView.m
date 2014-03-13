@@ -197,6 +197,64 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     }
 }
 
+- (void)setPromptImage:(UIImage *)promptImage {
+    _promptImage = promptImage.copy;
+    
+    if (self.showPrompt && self.visibleCells.count > 0)
+    {
+        [self reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]]];
+    }
+}
+
+- (void)setPromptPlaceholder:(NSString *)promptPlaceholder {
+    _promptPlaceholder = promptPlaceholder.copy;
+    
+    if (self.showPrompt && self.visibleCells.count > 0)
+    {
+        [self reloadItemsAtIndexPaths:@[self.entryCellIndexPath]];
+    }
+}
+
+- (void)setFont:(UIFont *)font {
+    _font = font.copy;
+    
+    if (self.showPrompt && self.visibleCells.count > 0)
+    {
+        [self reloadData];
+    }
+
+}
+
+- (void)setPlaceholderColor:(UIColor *)placeholderColor {
+    _placeholderColor = placeholderColor.copy;
+    
+    if (self.showPrompt && self.visibleCells.count > 0)
+    {
+        [self reloadData];
+    }
+
+}
+
+- (void)setTextColor:(UIColor *)textColor {
+    _textColor = textColor.copy;
+    
+    if (self.showPrompt && self.visibleCells.count > 0)
+    {
+        [self reloadData];
+    }
+
+}
+
+- (void)setSelectedColor:(UIColor *)selectedColor {
+    _selectedColor = selectedColor;
+    
+    if (self.showPrompt && self.visibleCells.count > 0)
+    {
+        [self reloadData];
+    }
+
+}
+
 #pragma mark - UIResponder
 
 // Important to return YES here if we want to become the first responder after a child (i.e., entry UITextField)
@@ -246,9 +304,10 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 
 - (void)addToSelectedContacts:(id<MBContactPickerModelProtocol>)model withCompletion:(void(^)())completion
 {
+    MBContactCollectionViewEntryCell *entryCell = (MBContactCollectionViewEntryCell *)[self cellForItemAtIndexPath:[self entryCellIndexPath]];
+
     if ([[self indexPathsForVisibleItems] containsObject:self.entryCellIndexPath])
     {
-        MBContactCollectionViewEntryCell *entryCell = (MBContactCollectionViewEntryCell *)[self cellForItemAtIndexPath:[self entryCellIndexPath]];
         [entryCell reset];
     }
     else
@@ -272,8 +331,11 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
             {
                 [self.contactDelegate contactCollectionView:self didAddContact:model];
             }
+            
+            entryCell.namesAdded = ([self.selectedContacts count] > 0);
         }];
     }
+    
 }
 
 - (void)removeFromSelectedContacts:(NSInteger)index withCompletion:(void(^)())completion
@@ -295,6 +357,10 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
             {
                 [self.contactDelegate contactCollectionView:self didRemoveContact:model];
             }
+
+            MBContactCollectionViewEntryCell *entryCell = (MBContactCollectionViewEntryCell *)[self cellForItemAtIndexPath:[self entryCellIndexPath]];
+            entryCell.namesAdded = ([self.selectedContacts count] > 0);
+
             [self setFocusOnEntry];
         }];
     }
@@ -425,7 +491,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     
     if ([self isPromptCell:indexPath])
     {
-        widthForItem = [MBContactCollectionViewPromptCell widthWithPrompt:self.prompt];
+        widthForItem = [MBContactCollectionViewPromptCell widthWithPrompt:self.prompt image:self.promptImage];
         widthForItem += 20;
     }
     else if ([self isEntryCell:indexPath])
@@ -470,6 +536,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     {
         MBContactCollectionViewPromptCell *cell = (MBContactCollectionViewPromptCell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"ContactPromptCell" forIndexPath:indexPath];
         cell.prompt = self.prompt;
+        cell.promptImage = self.promptImage;
         collectionCell = cell;
         self.promptCell = cell;
     }
@@ -478,6 +545,10 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
         MBContactCollectionViewEntryCell *cell = (MBContactCollectionViewEntryCell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"ContactEntryCell"
                                                                                                                            forIndexPath:indexPath];
         
+        cell.promptPlaceholder = self.promptPlaceholder;
+        cell.font = self.font;
+        cell.placeholderColor = self.placeholderColor;
+        cell.textColor = self.textColor;
         cell.delegate = self;
         collectionCell = cell;
         
@@ -494,6 +565,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
         MBContactCollectionViewContactCell *cell = (MBContactCollectionViewContactCell*)[collectionView dequeueReusableCellWithReuseIdentifier:@"ContactCell"
                                                                                                                 forIndexPath:indexPath];
         cell.model = self.selectedContacts[[self selectedContactIndexFromIndexPath:indexPath]];
+        cell.font = self.font;
         if ([self.indexPathOfSelectedCell isEqual:indexPath])
         {
             cell.focused = YES;
@@ -550,7 +622,8 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
-    return NO;
+    [self resignFirstResponder];
+    return YES;
 }
 
 @end

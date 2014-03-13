@@ -13,6 +13,7 @@
 
 @property (nonatomic, strong) id<MBContactPickerModelProtocol> model;
 @property (nonatomic) BOOL focused;
+@property (nonatomic, copy) UIFont *font;
 
 - (CGFloat)widthForCellWithContact:(id<MBContactPickerModelProtocol>)model;
 

@@ -11,8 +11,9 @@
 @interface MBContactCollectionViewPromptCell : UICollectionViewCell
 
 @property (nonatomic, copy) NSString *prompt;
+@property (nonatomic, copy) UIImage *promptImage;
 @property (nonatomic) UIEdgeInsets insets;
 
-+ (CGFloat)widthWithPrompt:(NSString *)prompt;
++ (CGFloat)widthWithPrompt:(NSString *)prompt image:(UIImage *)promptImage;
 
 @end

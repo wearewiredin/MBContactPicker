@@ -11,6 +11,7 @@
 @interface MBContactCollectionViewPromptCell()
 
 @property (nonatomic, weak) UILabel *promptLabel;
+@property (nonatomic, weak) UIImageView *promptImageView;
 
 @end
 
@@ -74,28 +75,60 @@
     label.text = self.prompt;
     label.textColor = [UIColor blackColor];
     self.promptLabel = label;
+    
+    UIImageView *imageView = [[UIImageView alloc] init];
+    imageView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self addSubview:imageView];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[imageView]|"
+                                                                 options:0
+                                                                 metrics:nil
+                                                                   views:NSDictionaryOfVariableBindings(imageView)]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[imageView]|"
+                                                                 options:0
+                                                                 metrics:nil
+                                                                   views:NSDictionaryOfVariableBindings(imageView)]];
+    imageView.contentMode = UIViewContentModeCenter;
+    self.promptImageView = imageView;
 }
 
-- (void)setPrompt:(NSString *)prompt
-{
+- (void)setPrompt:(NSString *)prompt {
     _prompt = prompt.copy;
+    
+    self.promptImageView.image = nil;
     self.promptLabel.text = prompt;
+    
+}
+
+- (void)setPromptImage:(UIImage *)promptImage {
+    _promptImage = promptImage.copy;
+    
+    self.promptLabel.text = @"";
+    self.promptImageView.image = promptImage;
 }
 
 static UILabel *templateLabel;
 
-+ (CGFloat)widthWithPrompt:(NSString *)prompt
-{
-    if (!templateLabel)
-    {
-        templateLabel = [[UILabel alloc] init];
++ (CGFloat)widthWithPrompt:(NSString *)prompt image:(UIImage *)promptImage {
+
+    if (promptImage) {
+        
+        CGFloat width = promptImage.size.width;
+        return width;
+        
+    } else {
+        
+        if (!templateLabel)
+        {
+            templateLabel = [[UILabel alloc] init];
+        }
+        
+        CGRect frame = [prompt boundingRectWithSize:(CGSize){ .width = CGFLOAT_MAX, .height = CGFLOAT_MAX }
+                                            options:NSStringDrawingUsesLineFragmentOrigin
+                                         attributes:@{ NSFontAttributeName : templateLabel.font }
+                                            context:nil];
+        return ceilf(frame.size.width);
+        
     }
-    
-    CGRect frame = [prompt boundingRectWithSize:(CGSize){ .width = CGFLOAT_MAX, .height = CGFLOAT_MAX }
-                                        options:NSStringDrawingUsesLineFragmentOrigin
-                                     attributes:@{ NSFontAttributeName : templateLabel.font }
-                                        context:nil];
-    return ceilf(frame.size.width);
 }
 
 @end

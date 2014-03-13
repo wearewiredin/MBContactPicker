@@ -66,7 +66,16 @@
 - (void)setModel:(id<MBContactPickerModelProtocol>)model
 {
     _model = model;
-    self.contactTitleLabel.text = self.model.contactTitle;
+    if (_focused) {
+        self.contactTitleLabel.text = self.model.contactTitle;
+    } else {
+        self.contactTitleLabel.text = [NSString stringWithFormat:@"%@,", self.model.contactTitle];
+    }
+}
+
+- (void)setFont:(UIFont *)font {
+    _font = font;
+    self.contactTitleLabel.font = font;
 }
 
 - (CGFloat)widthForCellWithContact:(id<MBContactPickerModelProtocol>)model
@@ -85,11 +94,14 @@
         self.contactTitleLabel.textColor = [UIColor whiteColor];
         self.contactTitleLabel.backgroundColor = self.tintColor;
         self.contactTitleLabel.layer.cornerRadius = 3.0f;
+        self.contactTitleLabel.text = self.model.contactTitle;
     }
     else
     {
         self.contactTitleLabel.textColor = self.tintColor;
         self.contactTitleLabel.backgroundColor = [UIColor clearColor];
+        self.contactTitleLabel.text = [NSString stringWithFormat:@"%@,", self.model.contactTitle];
+
     }
 }
 

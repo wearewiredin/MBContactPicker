@@ -41,6 +41,8 @@
 @property (nonatomic, readonly) NSArray *contactsSelected;
 @property (nonatomic) NSInteger cellHeight;
 @property (nonatomic, copy) NSString *prompt;
+@property (nonatomic, copy) UIImage *promptImage;
+@property (nonatomic, copy) NSString *promptPlaceholder;
 @property (nonatomic) CGFloat maxVisibleRows;
 @property (nonatomic, readonly) CGFloat currentContentHeight;
 @property (nonatomic, readonly) CGFloat keyboardHeight;
@@ -48,6 +50,10 @@
 @property (nonatomic) BOOL allowsCompletionOfSelectedContacts;
 @property (nonatomic) BOOL enabled;
 @property (nonatomic) BOOL showPrompt;
+@property (nonatomic, copy) UIFont *font;
+@property (nonatomic, copy) UIColor *placeholderColor;
+@property (nonatomic, copy) UIColor *textColor;
+@property (nonatomic, copy) UIColor *selectedColor;
 
 - (void)reloadData;
 
