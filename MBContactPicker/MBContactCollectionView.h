@@ -56,5 +56,6 @@
 @property (nonatomic, copy) UIColor *textColor;
 @property (nonatomic, copy) UIColor *selectedColor;
 
++ (CGFloat)defaultHeight;
 
 @end

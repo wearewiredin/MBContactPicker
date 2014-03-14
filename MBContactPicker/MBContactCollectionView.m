@@ -626,4 +626,8 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     return YES;
 }
 
++ (CGFloat)defaultHeight {
+    return kCellHeight;
+}
+
 @end
