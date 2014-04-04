@@ -50,11 +50,15 @@
 @property (nonatomic) BOOL allowsCompletionOfSelectedContacts;
 @property (nonatomic) BOOL enabled;
 @property (nonatomic) BOOL showPrompt;
+
 @property (nonatomic, copy) UIFont *font;
 @property (nonatomic, copy) UIColor *placeholderColor;
 @property (nonatomic, copy) UIColor *textColor;
 @property (nonatomic, copy) UIColor *selectedColor;
+@property (nonatomic, strong) UIView *searchListFooterView;
+@property (nonatomic, assign) BOOL showFooterEmptyOnly;
 
+- (void)reset;
 - (void)reloadData;
 - (void)addSelectedContact:(MBContactModel *)contact;
 

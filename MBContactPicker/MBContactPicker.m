@@ -142,6 +142,11 @@ CGFloat const kAnimationSpeed = .25;
     self.keyboardHeight = keyboardRect.size.height;
 }
 
+- (void)reset {
+    [self.contactCollectionView reset];
+    
+}
+
 - (void)reloadData
 {
     self.contactCollectionView.selectedContacts = [[NSMutableArray alloc] init];
@@ -221,6 +226,11 @@ CGFloat const kAnimationSpeed = .25;
     self.contactCollectionView.selectedColor = selectedColor;
 }
 
+- (void)setSearchListFooterView:(UIView *)searchListFooterView {
+    _searchListFooterView = searchListFooterView;
+    _searchListFooterView.hidden = YES;
+    self.searchTableView.tableFooterView = searchListFooterView;
+}
 
 - (void)setMaxVisibleRows:(CGFloat)maxVisibleRows
 {
@@ -234,7 +244,6 @@ CGFloat const kAnimationSpeed = .25;
     CGFloat maximumSize = self.maxVisibleRows * self.cellHeight;
     return MIN(minimumSizeWithContent, maximumSize);
 }
-
 
 - (void)setEnabled:(BOOL)enabled
 {
@@ -259,6 +268,12 @@ CGFloat const kAnimationSpeed = .25;
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
+    if (self.showFooterEmptyOnly) {
+        _searchListFooterView.hidden = (self.filteredContacts.count > 0);
+    } else {
+        _searchListFooterView.hidden = NO;
+    }
+    
     return self.filteredContacts.count;
 }
 
@@ -274,8 +289,9 @@ CGFloat const kAnimationSpeed = .25;
     id<MBContactPickerModelProtocol> model = (id<MBContactPickerModelProtocol>)self.filteredContacts[indexPath.row];
 
     cell.textLabel.text = model.contactTitle;
-
+    cell.textLabel.font = self.font;
     cell.detailTextLabel.text = nil;
+
     cell.imageView.image = nil;
     
     if ([model respondsToSelector:@selector(contactSubtitle)])

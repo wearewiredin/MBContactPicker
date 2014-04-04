@@ -92,6 +92,12 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     }
 }
 
+- (void)reset {
+
+    MBContactCollectionViewEntryCell *cell = [self cellForItemAtIndexPath:self.entryCellIndexPath];
+    [cell reset];
+}
+
 - (void)forceRelayout
 {
     // * Technique taken from http://stackoverflow.com/a/13656570
