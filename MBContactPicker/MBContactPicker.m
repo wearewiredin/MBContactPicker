@@ -312,11 +312,21 @@ CGFloat const kAnimationSpeed = .25;
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     id<MBContactPickerModelProtocol> model = self.filteredContacts[indexPath.row];
+
+    BOOL selected = NO;
+    for (MBContactModel *modelObject in self.contactsSelected) {
+        if ([[modelObject contactTitle] isEqualToString:[model contactTitle]]) {
+            selected = YES;
+        }
+    }
+    
+    if (!selected) {
+        [self.contactCollectionView addToSelectedContacts:model withCompletion:^{
+            [self becomeFirstResponder];
+        }];
+    }
     
     [self hideSearchTableView];
-    [self.contactCollectionView addToSelectedContacts:model withCompletion:^{
-        [self becomeFirstResponder];
-    }];
 }
 
 #pragma mark - ContactCollectionViewDelegate
