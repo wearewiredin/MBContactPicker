@@ -43,16 +43,17 @@
 {
     UILabel *contactLabel = [[UILabel alloc] initWithFrame:self.bounds];
     [self addSubview:contactLabel];
+    contactLabel.clipsToBounds = YES;
     contactLabel.textColor = [UIColor blueColor];
     contactLabel.textAlignment = NSTextAlignmentCenter;
     [contactLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
     self.contactTitleLabel = contactLabel;
-
+    
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(2)-[contactLabel]-(2)-|"
                                                                  options:0
                                                                  metrics:nil
                                                                    views:NSDictionaryOfVariableBindings(contactLabel)]];
-
+    
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[contactLabel]|"
                                                                  options:0
                                                                  metrics:nil
@@ -100,8 +101,9 @@
     {
         self.contactTitleLabel.textColor = self.tintColor;
         self.contactTitleLabel.backgroundColor = [UIColor clearColor];
+        self.contactTitleLabel.layer.cornerRadius = 3.0f;
         self.contactTitleLabel.text = [NSString stringWithFormat:@"%@,", self.model.contactTitle];
-
+        
     }
 }
 

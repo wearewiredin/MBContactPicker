@@ -265,9 +265,18 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 
 // Important to return YES here if we want to become the first responder after a child (i.e., entry UITextField)
 // has given it up so we can respond to keyboard events
+
+// For Tanner's version we want to check to see if an item is selected.
+
 - (BOOL)canBecomeFirstResponder
 {
-    return YES;
+    NSArray *array = self.indexPathsForSelectedItems;
+    
+    if ([self.indexPathsForSelectedItems count] > 0) {
+        return YES;
+    } else {
+        return NO;
+    }
 }
 
 - (BOOL)resignFirstResponder
@@ -549,9 +558,12 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     else if ([self isEntryCell:indexPath])
     {
         MBContactCollectionViewEntryCell *cell = (MBContactCollectionViewEntryCell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"ContactEntryCell"
-                                                                                                                           forIndexPath:indexPath];
-        
-        cell.promptPlaceholder = self.promptPlaceholder;
+                                                                                                                               forIndexPath:indexPath];
+        if ([self.selectedContacts count] == 0) {
+            cell.promptPlaceholder = self.promptPlaceholder;
+        } else {
+            cell.promptPlaceholder = @"";
+        }
         cell.font = self.font;
         cell.placeholderColor = self.placeholderColor;
         cell.textColor = self.textColor;
@@ -606,8 +618,8 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
             NSIndexPath *newSelectedIndexPath = [NSIndexPath indexPathForItem:self.selectedContacts.count - (self.showPrompt ? 0 : 1)
                                                                     inSection:0];
             [self selectItemAtIndexPath:newSelectedIndexPath
-                                                     animated:YES
-                                               scrollPosition:UICollectionViewScrollPositionBottom];
+                               animated:YES
+                         scrollPosition:UICollectionViewScrollPositionBottom];
             [self.delegate collectionView:self didSelectItemAtIndexPath:newSelectedIndexPath];
             [self becomeFirstResponder];
         }
