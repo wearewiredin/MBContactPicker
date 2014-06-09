@@ -56,6 +56,7 @@
 @property (nonatomic, copy) UIColor *textColor;
 @property (nonatomic, copy) UIColor *selectedColor;
 @property (nonatomic, strong) UIView *searchListFooterView;
+@property (nonatomic, assign) CGFloat tableViewTopInset;
 @property (nonatomic, assign) BOOL showFooterEmptyOnly;
 
 - (void)reset;
