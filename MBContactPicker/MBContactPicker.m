@@ -90,12 +90,14 @@ CGFloat const kAnimationSpeed = .25;
     contactCollectionView.translatesAutoresizingMaskIntoConstraints = NO;
     [self addSubview:contactCollectionView];
     self.contactCollectionView = contactCollectionView;
-
+    
     UITableView *searchTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, self.bounds.size.height, self.bounds.size.width, 0)];
     searchTableView.dataSource = self;
     searchTableView.delegate = self;
     searchTableView.translatesAutoresizingMaskIntoConstraints = NO;
     searchTableView.hidden = YES;
+    searchTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    searchTableView.contentInset = UIEdgeInsetsMake(self.tableViewTopInset, 0, 0, 0);
     [self addSubview:searchTableView];
     self.searchTableView = searchTableView;
     
@@ -107,7 +109,7 @@ CGFloat const kAnimationSpeed = .25;
                                                                  options:0
                                                                  metrics:nil
                                                                    views:NSDictionaryOfVariableBindings(contactCollectionView, searchTableView)]];
-
+    
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[contactCollectionView]-(0@500)-|"
                                                                  options:0
                                                                  metrics:nil
@@ -122,7 +124,6 @@ CGFloat const kAnimationSpeed = .25;
                                                                  options:0
                                                                  metrics:nil
                                                                    views:NSDictionaryOfVariableBindings(searchTableView)]];
-    
     
 #ifdef DEBUG_BORDERS
     self.layer.borderColor = [UIColor grayColor].CGColor;
@@ -166,10 +167,10 @@ CGFloat const kAnimationSpeed = .25;
 }
 
 - (void)addSelectedContact:(MBContactModel *)contact {
-
+    
     [self.contactCollectionView addToSelectedContacts:contact withCompletion:^{
     }];
-
+    
 }
 
 #pragma mark - Properties
@@ -224,6 +225,12 @@ CGFloat const kAnimationSpeed = .25;
 - (void)setSelectedColor:(UIColor *)selectedColor {
     _selectedColor = selectedColor;
     self.contactCollectionView.selectedColor = selectedColor;
+}
+
+-  (void)setTableViewTopInset:(CGFloat)tableViewTopInset {
+    _tableViewTopInset = tableViewTopInset;
+    
+    self.searchTableView.contentInset = UIEdgeInsetsMake(tableViewTopInset, 0, 0, 0);
 }
 
 - (void)setSearchListFooterView:(UIView *)searchListFooterView {
@@ -285,13 +292,26 @@ CGFloat const kAnimationSpeed = .25;
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle
                                       reuseIdentifier:@"Cell"];
     }
-
+    
     id<MBContactPickerModelProtocol> model = (id<MBContactPickerModelProtocol>)self.filteredContacts[indexPath.row];
-
+    
     cell.textLabel.text = model.contactTitle;
     cell.textLabel.font = self.font;
     cell.detailTextLabel.text = nil;
-
+    
+    UIView *separator = [[UIView alloc] initWithFrame:CGRectMake(0, 0, cell.contentView.frame.size.width, 0.5)];;
+    separator.backgroundColor = [UIColor lightGrayColor];
+    [cell.contentView addSubview:separator];
+    
+    [cell addConstraints: @[[NSLayoutConstraint constraintWithItem:separator attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual
+                                                            toItem:cell.contentView attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0],
+                            
+                            [NSLayoutConstraint constraintWithItem:separator attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual
+                                                            toItem:cell.contentView attribute:NSLayoutAttributeTop multiplier:1.0 constant:0],
+                            
+                            [NSLayoutConstraint constraintWithItem:separator attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual
+                                                            toItem:cell.contentView attribute:NSLayoutAttributeWidth multiplier:1.0 constant:0]]];
+    
     cell.imageView.image = nil;
     
     if ([model respondsToSelector:@selector(contactSubtitle)])
@@ -312,7 +332,7 @@ CGFloat const kAnimationSpeed = .25;
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     id<MBContactPickerModelProtocol> model = self.filteredContacts[indexPath.row];
-
+    
     BOOL selected = NO;
     for (MBContactModel *modelObject in self.contactsSelected) {
         if ([[modelObject contactTitle] isEqualToString:[model contactTitle]]) {
@@ -348,13 +368,13 @@ CGFloat const kAnimationSpeed = .25;
 - (void)contactCollectionView:(MBContactCollectionView*)contactCollectionView entryTextDidChange:(NSString*)text
 {
     [self.contactCollectionView.collectionViewLayout invalidateLayout];
-
+    
     [self.contactCollectionView performBatchUpdates:^{
         [self layoutIfNeeded];
     }
-    completion:^(BOOL finished) {
-        [self.contactCollectionView setFocusOnEntry];
-    }];
+                                         completion:^(BOOL finished) {
+                                             [self.contactCollectionView setFocusOnEntry];
+                                         }];
     
     if ([text isEqualToString:@" "])
     {
@@ -472,7 +492,7 @@ CGFloat const kAnimationSpeed = .25;
             }
         }
     }
-
+    
 }
 
 @end
